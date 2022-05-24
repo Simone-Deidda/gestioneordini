@@ -8,10 +8,11 @@ import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
 
 public class ArticoloDAOImpl implements ArticoloDAO {
+	private EntityManager entityManager;
 
 	@Override
 	public List<Articolo> list() throws Exception {
-		return null;
+		return entityManager.createQuery("from Articolo", Articolo.class).getResultList();
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 
 	@Override
 	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
-
 
 }

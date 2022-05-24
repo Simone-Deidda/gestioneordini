@@ -2,6 +2,9 @@ package it.prova.gestioneordini.service.categoria;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Categoria;
 import it.prova.gestioneordini.model.Ordine;
@@ -11,7 +14,18 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public List<Categoria> listAll() throws Exception {
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			categoriaDAO.setEntityManager(entityManager);
+
+			return categoriaDAO.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

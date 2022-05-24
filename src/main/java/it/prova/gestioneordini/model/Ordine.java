@@ -29,7 +29,7 @@ public class Ordine {
 	@Column(name = "dataSpedizione")
 	private Date dataSpedizione;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "articolo")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "ordine")
 	private Set<Articolo> articoli = new HashSet<Articolo>();
 	
 	public Ordine() {

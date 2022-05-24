@@ -4,14 +4,16 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
 import it.prova.gestioneordini.model.Ordine;
 
 public class OrdineDAOImpl implements OrdineDAO {
+	private EntityManager entityManager;
 
 	@Override
 	public List<Ordine> list() throws Exception {
-		return null;
+		return entityManager.createQuery("from Ordine", Ordine.class).getResultList();
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public class OrdineDAOImpl implements OrdineDAO {
 
 	@Override
 	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
 }

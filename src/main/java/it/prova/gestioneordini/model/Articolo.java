@@ -39,7 +39,7 @@ public class Articolo {
 	@JoinTable(name = "articolo_categoria", joinColumns = @JoinColumn(name = "articolo_id", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "categoria_id", referencedColumnName = "ID"))
 	Set<Categoria> categorie = new HashSet<Categoria>();
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "articolo_id", nullable = false)
+	@JoinColumn(name = "ordine_id", nullable = false)
 	private Ordine ordine;
 	
 	public Articolo() {

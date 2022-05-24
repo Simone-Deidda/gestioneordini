@@ -2,6 +2,9 @@ package it.prova.gestioneordini.service.articolo;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
@@ -16,7 +19,18 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 	@Override
 	public List<Articolo> listAll() throws Exception {
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			articoloDao.setEntityManager(entityManager);
+
+			return articoloDao.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

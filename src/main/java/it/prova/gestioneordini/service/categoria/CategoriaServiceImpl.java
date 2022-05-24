@@ -39,6 +39,22 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public void inserisciNuovo(Categoria categoriaInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+
+			categoriaDAO.setEntityManager(entityManager);
+			categoriaDAO.insert(categoriaInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

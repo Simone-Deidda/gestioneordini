@@ -44,6 +44,22 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 	@Override
 	public void inserisciNuovo(Articolo articoloInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+
+			articoloDao.setEntityManager(entityManager);
+			articoloDao.insert(articoloInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

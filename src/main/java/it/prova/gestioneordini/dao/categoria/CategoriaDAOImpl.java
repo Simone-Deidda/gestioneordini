@@ -26,6 +26,10 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
 	@Override
 	public void insert(Categoria o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		entityManager.persist(o);
 	}
 
 	@Override

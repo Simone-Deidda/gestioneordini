@@ -27,6 +27,10 @@ public class OrdineDAOImpl implements OrdineDAO {
 
 	@Override
 	public void insert(Ordine o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		entityManager.persist(o);
 	}
 
 	@Override

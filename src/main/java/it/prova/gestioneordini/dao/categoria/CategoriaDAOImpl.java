@@ -17,11 +17,15 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
 	@Override
 	public Categoria get(Long id) throws Exception {
-		return null;
+		return entityManager.find(Categoria.class, id);
 	}
 
 	@Override
 	public void update(Categoria o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		o = entityManager.merge(o);
 	}
 
 	@Override

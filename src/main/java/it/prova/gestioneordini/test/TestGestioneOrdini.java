@@ -20,31 +20,34 @@ public class TestGestioneOrdini {
 		try {
 			System.out.println(
 					"Nella tabella Articolo ci sono " + articoloServiceInstance.listAll().size() + " elementi.");
-			System.out.println(
-					"Nella tabella Ordine ci sono " + ordineServiceInstance.listAll().size() + " elementi.");
+			System.out.println("Nella tabella Ordine ci sono " + ordineServiceInstance.listAll().size() + " elementi.");
 			System.out.println(
 					"Nella tabella Categoria ci sono " + categoriaServiceInstance.listAll().size() + " elementi.");
 
 			testInserimentoOrdine(ordineServiceInstance);
-			
+
 			testInserimentoCategoria(categoriaServiceInstance);
-			
+
 			testInserimentoArticolo(articoloServiceInstance, ordineServiceInstance);
-			
-			//testAggiornaOrdine(ordineServiceInstance);
-			
-			//testAggiungiArticoloAOrdine(ordineServiceInstance);
-			
-			//testRimuoviArticoloAOrdine(ordineServiceInstance);
-			
-			//testAggiungiArticoloACategoria(ordineServiceInstance);
-			
-			//testRimuoviArticoloACategoria(ordineServiceInstance);
-			
-			//testAggiungiCategoriaAdArticolo(ordineServiceInstance);
-			
-			//testRimuoviCategoriaAdArticolo(ordineServiceInstance);
-			
+
+			testAggiornaOrdine(ordineServiceInstance);
+
+			testAggiornaCategoria(categoriaServiceInstance);
+
+			testAggiornaArticolo(articoloServiceInstance, ordineServiceInstance);
+
+			// testAggiungiArticoloAOrdine(ordineServiceInstance);
+
+			// testRimuoviArticoloAOrdine(ordineServiceInstance);
+
+			// testAggiungiArticoloACategoria(ordineServiceInstance);
+
+			// testRimuoviArticoloACategoria(ordineServiceInstance);
+
+			// testAggiungiCategoriaAdArticolo(ordineServiceInstance);
+
+			// testRimuoviCategoriaAdArticolo(ordineServiceInstance);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,82 +55,151 @@ public class TestGestioneOrdini {
 
 	private static void testInserimentoOrdine(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testInserimentoOrdine >>>>>>>>>>");
-		
-		Ordine nuovoOrdine = new Ordine("Gianfranco Mura", "via Curiel", new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2021"));
+
+		Ordine nuovoOrdine = new Ordine("Gianfranco Mura", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2021"));
 		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
 		if (nuovoOrdine.getId() == null) {
 			throw new RuntimeException("testInserimentoOrdine fallito: l'Ordine non è stato inserito correttamente.");
 		}
-		
+
 		System.out.println("\n<<<<<<<<<< Fine testInserimentoOrdine: PASSATO >>>>>>>>>>");
 	}
-	
+
 	private static void testInserimentoCategoria(CategoriaService categoriaServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testInserimentoCategoria >>>>>>>>>>");
-		
+
 		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
 		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
 		if (nuovoCategoria.getId() == null) {
-			throw new RuntimeException("testInserimentoCategoria fallito: la Categoria non è stato inserito correttamente.");
+			throw new RuntimeException(
+					"testInserimentoCategoria fallito: la Categoria non è stato inserito correttamente.");
 		}
-		
+
 		System.out.println("\n<<<<<<<<<< Fine testInserimentoCategoria: PASSATO >>>>>>>>>>");
 	}
-	
-	private static void testInserimentoArticolo(ArticoloService articoloServiceInstance, OrdineService ordineServiceInstance) throws Exception {
+
+	private static void testInserimentoArticolo(ArticoloService articoloServiceInstance,
+			OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testInserimentoArticolo >>>>>>>>>>");
-		
-		Articolo nuovoArticolo = new Articolo("Mela", "0001122233", 1, new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+
+		Articolo nuovoArticolo = new Articolo("Mela", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
 		Ordine primOrdine = ordineServiceInstance.listAll().get(0);
 		nuovoArticolo.setOrdine(primOrdine);
-		
+
 		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
 		if (nuovoArticolo.getId() == null) {
-			throw new RuntimeException("testInserimentoArticolo fallito: l'Articolo non è stato inserito correttamente.");
+			throw new RuntimeException(
+					"testInserimentoArticolo fallito: l'Articolo non è stato inserito correttamente.");
 		}
-		
+
 		System.out.println("\n<<<<<<<<<< Fine testInserimentoArticolo: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testAggiornaOrdine(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testAggiornaOrdine(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testAggiornaOrdine >>>>>>>>>>");
-		
+		Ordine nuovoOrdine = new Ordine("", "via Mosca", new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2020"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+
+		String nome = "Franco Serri";
+		nuovoOrdine.setNomeDestinatario(nome);
+		ordineServiceInstance.aggiorna(nuovoOrdine);
+
+		Ordine foundById = ordineServiceInstance.caricaSingoloElemento(nuovoOrdine.getId());
+		if (foundById == null || !foundById.getId().equals(nuovoOrdine.getId())) {
+			throw new RuntimeException("testAggiornaOrdine fallito: l'Ordine ricercato per ID non combacia.");
+		}
+
+		if (foundById.getNomeDestinatario().isEmpty() || !foundById.getNomeDestinatario().equals(nome)) {
+			throw new RuntimeException(
+					"testAggiornaOrdine fallito: l'Ordine ricercato per ID non contiene i campi aggiornati.");
+		}
+
 		System.out.println("<<<<<<<<<< Fine testAggiornaOrdine: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testAggiungiArticoloAOrdine(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testAggiornaCategoria(CategoriaService categoriaServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testAggiornaCategoria >>>>>>>>>>");
+		Categoria nuovaCategoria = new Categoria("", "CODICE_007");
+		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
+
+		String descrizione = "Pesce";
+		nuovaCategoria.setDescrizione(descrizione);
+		categoriaServiceInstance.aggiorna(nuovaCategoria);
+
+		Categoria foundById = categoriaServiceInstance.caricaSingoloElemento(nuovaCategoria.getId());
+		if (foundById == null || !foundById.getId().equals(nuovaCategoria.getId())) {
+			throw new RuntimeException("testAggiornaCategoria fallito: la Categoria ricercata per ID non combacia.");
+		}
+
+		if (foundById.getDescrizione().isEmpty() || !foundById.getDescrizione().equals(descrizione)) {
+			throw new RuntimeException(
+					"testAggiornaCategoria fallito: la Categoria ricercata per ID non contiene i campi aggiornati.");
+		}
+
+		System.out.println("<<<<<<<<<< Fine testAggiornaCategoria: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testAggiornaArticolo(ArticoloService articoloServiceInstance,
+			OrdineService ordineServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testAggiornaArticolo >>>>>>>>>>");
+		Ordine primoOrdine = ordineServiceInstance.listAll().get(0);
+		Articolo nuovoArticolo = new Articolo("", "5559966777", 20,
+				new SimpleDateFormat("dd/MM/yyyy").parse("21/05/2022"));
+		nuovoArticolo.setOrdine(primoOrdine);
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+
+		String descrizione = "Merluzzo";
+		nuovoArticolo.setDescrizione(descrizione);
+		articoloServiceInstance.aggiorna(nuovoArticolo);
+
+		Articolo foundById = articoloServiceInstance.caricaSingoloElemento(nuovoArticolo.getId());
+		if (foundById == null || !foundById.getId().equals(nuovoArticolo.getId())) {
+			throw new RuntimeException("testAggiornaArticolo fallito: l'Articolo ricercato per ID non combacia.");
+		}
+
+		if (foundById.getDescrizione().isEmpty() || !foundById.getDescrizione().equals(descrizione)) {
+			throw new RuntimeException(
+					"testAggiornaArticolo fallito: l'Articolo ricercato per ID non contiene i campi aggiornati.");
+		}
+
+		System.out.println("<<<<<<<<<< Fine testAggiornaArticolo: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testAggiungiArticoloAOrdine(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testAggiungiArticoloAOrdine >>>>>>>>>>");
-		
+
 		System.out.println("<<<<<<<<<< Fine testAggiungiArticoloAOrdine: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testRimuoviArticoloAOrdine(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testRimuoviArticoloAOrdine(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviArticoloAOrdine >>>>>>>>>>");
-		
+
 		System.out.println("<<<<<<<<<< Fine testRimuoviArticoloAOrdine: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testAggiungiArticoloACategoria(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testAggiungiArticoloACategoria(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testAggiungiArticoloACategoria >>>>>>>>>>");
-		
+
 		System.out.println("<<<<<<<<<< Fine testAggiungiArticoloACategoria: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testRimuoviArticoloACategoria(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testRimuoviArticoloACategoria(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviArticoloACategoria >>>>>>>>>>");
-		
+
 		System.out.println("<<<<<<<<<< Fine testRimuoviArticoloACategoria: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testAggiungiCategoriaAdArticolo(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testAggiungiCategoriaAdArticolo(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testAggiungiCategoriaAdArticolo >>>>>>>>>>");
-		
+
 		System.out.println("<<<<<<<<<< Fine testAggiungiCategoriaAdArticolo: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testRimuoviCategoriaAdArticolo(OrdineService ordineServiceInstance) throws Exception  {
+	private static void testRimuoviCategoriaAdArticolo(OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviCategoriaAdArticolo >>>>>>>>>>");
-		
+
 		System.out.println("<<<<<<<<<< Fine testRimuoviCategoriaAdArticolo: PASSATO >>>>>>>>>>");
 	}
 

@@ -17,11 +17,15 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 
 	@Override
 	public Articolo get(Long id) throws Exception {
-		return null;
+		return entityManager.find(Articolo.class, id);
 	}
 
 	@Override
 	public void update(Articolo o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		o = entityManager.merge(o);
 	}
 
 	@Override

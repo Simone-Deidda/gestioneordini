@@ -35,11 +35,38 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 	@Override
 	public Articolo caricaSingoloElemento(Long id) throws Exception {
-		return null;
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			articoloDao.setEntityManager(entityManager);
+			return articoloDao.get(id);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override
 	public void aggiorna(Articolo articoloInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+
+			articoloDao.setEntityManager(entityManager);
+			articoloDao.update(articoloInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

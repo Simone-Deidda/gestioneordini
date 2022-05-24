@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
 import it.prova.gestioneordini.model.Ordine;
 
@@ -18,11 +17,15 @@ public class OrdineDAOImpl implements OrdineDAO {
 
 	@Override
 	public Ordine get(Long id) throws Exception {
-		return null;
+		return entityManager.find(Ordine.class, id);
 	}
 
 	@Override
 	public void update(Ordine o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		o = entityManager.merge(o);
 	}
 
 	@Override

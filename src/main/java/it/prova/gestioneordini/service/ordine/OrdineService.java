@@ -3,6 +3,7 @@ package it.prova.gestioneordini.service.ordine;
 import java.util.List;
 
 import it.prova.gestioneordini.dao.ordine.OrdineDAO;
+import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
 import it.prova.gestioneordini.model.Ordine;
 
@@ -22,7 +23,11 @@ public interface OrdineService {
 	public void rimuovi(Long idOrdine) throws Exception;
 
 	// operazioni di Ordine
+	public void rimuoviArticolo(Ordine ordineInstance, Articolo articoloInstance) throws Exception;
+	
 	public List<Ordine> listAllOrdiniAppartenentiA(Categoria input);
 
 	public Ordine getOrdinePiuRecenteData(Categoria input);
+
+	public Ordine caricaSingoloElementoEager(Long id);
 }

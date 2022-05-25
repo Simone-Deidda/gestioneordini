@@ -30,7 +30,7 @@ public class TestGestioneOrdini {
 
 			//testInserimentoCategoria(categoriaServiceInstance);
 
-			//testInserimentoArticolo(articoloServiceInstance, ordineServiceInstance);
+			//testInserimentoArticoloEAggiungiOrdine(articoloServiceInstance, ordineServiceInstance);
 
 			//testAggiornaOrdine(ordineServiceInstance);
 
@@ -40,7 +40,7 @@ public class TestGestioneOrdini {
 
 			// testAggiungiArticoloAOrdine(ordineServiceInstance);
 
-			// testRimuoviArticoloAOrdine(ordineServiceInstance);
+			testRimuoviArticoloAOrdine(ordineServiceInstance, articoloServiceInstance);
 
 			//testAggiungiArticoloACategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
@@ -48,7 +48,7 @@ public class TestGestioneOrdini {
 
 			//testAggiungiCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
-			testRimuoviCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+			//testRimuoviCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +81,7 @@ public class TestGestioneOrdini {
 		System.out.println("\n<<<<<<<<<< Fine testInserimentoCategoria: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testInserimentoArticolo(ArticoloService articoloServiceInstance,
+	private static void testInserimentoArticoloEAggiungiOrdine(ArticoloService articoloServiceInstance,
 			OrdineService ordineServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testInserimentoArticolo >>>>>>>>>>");
 
@@ -169,15 +169,23 @@ public class TestGestioneOrdini {
 		System.out.println("<<<<<<<<<< Fine testAggiornaArticolo: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testAggiungiArticoloAOrdine(OrdineService ordineServiceInstance) throws Exception {
-		System.out.println("\n<<<<<<<<<< Inizio testAggiungiArticoloAOrdine >>>>>>>>>>");
 
-		System.out.println("<<<<<<<<<< Fine testAggiungiArticoloAOrdine: PASSATO >>>>>>>>>>");
-	}
-
-	private static void testRimuoviArticoloAOrdine(OrdineService ordineServiceInstance) throws Exception {
+	private static void testRimuoviArticoloAOrdine(OrdineService ordineServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviArticoloAOrdine >>>>>>>>>>");
-
+		Ordine primoOrdine = ordineServiceInstance.listAll().get(0);
+		
+		Articolo nuovoArticolo = new Articolo("Pera", "9991122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("25/05/2022"));
+		nuovoArticolo.setOrdine(primoOrdine);
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+		
+		ordineServiceInstance.rimuoviArticolo(primoOrdine, nuovoArticolo);
+		Ordine primoOrdineEager = ordineServiceInstance.caricaSingoloElementoEager(primoOrdine.getId());
+		if (!primoOrdineEager.getArticoli().remove(nuovoArticolo)) {
+			throw new RuntimeException("testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
+		}
+		
+		
 		System.out.println("<<<<<<<<<< Fine testRimuoviArticoloAOrdine: PASSATO >>>>>>>>>>");
 	}
 

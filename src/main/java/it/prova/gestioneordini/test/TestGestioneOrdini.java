@@ -27,7 +27,7 @@ public class TestGestioneOrdini {
 			System.out.println("Nella tabella Ordine ci sono " + ordineServiceInstance.listAll().size() + " elementi.");
 			System.out.println(
 					"Nella tabella Categoria ci sono " + categoriaServiceInstance.listAll().size() + " elementi.");
-
+/*
 			testInserimentoOrdine(ordineServiceInstance);
 
 			testInserimentoCategoria(categoriaServiceInstance);
@@ -59,7 +59,8 @@ public class TestGestioneOrdini {
 
 			testGetOrdinePiuRecenteInTerminiDiSpedizioni(ordineServiceInstance, categoriaServiceInstance,
 					articoloServiceInstance);
-
+*/
+			testGetAllListaCodiciOrdiniDiFebbraio(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -456,6 +457,45 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println("\n<<<<<<<<<< Fine testGetOrdinePiuRecenteInTerminiDiSpedizioni: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testGetAllListaCodiciOrdiniDiFebbraio(OrdineService ordineServiceInstance,
+			CategoriaService categoriaServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testGetAllListaCodiciOrdiniDiFebbraio >>>>>>>>>>");
+
+		Ordine nuovoOrdine = new Ordine("Gianfranco Mura", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("10/02/2022"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testGetAllListaCodiciOrdiniDiFebbraio fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
+		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
+		if (nuovoCategoria.getId() == null) {
+			throw new RuntimeException(
+					"testGetAllListaCodiciOrdiniDiFebbraio fallito: la Categoria non è stato inserito correttamente.");
+		}
+
+		Articolo nuovoArticolo = new Articolo("Mela", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+		if (nuovoArticolo.getId() == null) {
+			throw new RuntimeException(
+					"testGetAllListaCodiciOrdiniDiFebbraio fallito: l'Articolo non è stato inserito correttamente.");
+		}
+
+		List<String> listaCodici = categoriaServiceInstance.listAllCodiciOfOrdineInFebbraio();
+		if (listaCodici == null || listaCodici.isEmpty() || !listaCodici.contains(nuovoCategoria.getCodice())) {
+			throw new RuntimeException(
+					"testGetAllListaCodiciOrdiniDiFebbraio fallito: la lista dei codici non contiene un dato valido appena inserito.");
+		}
+
+		System.out.println("\n<<<<<<<<<< Fine testGetAllListaCodiciOrdiniDiFebbraio: PASSATO >>>>>>>>>>");
 	}
 
 }

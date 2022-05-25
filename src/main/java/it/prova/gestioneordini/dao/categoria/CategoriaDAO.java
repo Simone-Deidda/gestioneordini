@@ -10,4 +10,6 @@ public interface CategoriaDAO extends IBaseDAO<Categoria> {
 	public List<Categoria> listAllCategorieOfOrdine(Ordine input);
 
 	public Categoria findByIdFetching(Long id);
+
+	public List<String> listAllCodesOfOrdineInFebbraio();
 }

@@ -60,6 +60,12 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 	}
 
 	@Override
+	public List<String> listAllCodesOfOrdineInFebbraio() {
+		TypedQuery<String> query = entityManager.createQuery("select distinct c.codice from Categoria c join c.articoli a join a.ordine o where o.dataSpedizione between '2022-02-01' and '2022-02-28'", String.class);
+		return query.getResultList();
+	}
+
+	@Override
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}

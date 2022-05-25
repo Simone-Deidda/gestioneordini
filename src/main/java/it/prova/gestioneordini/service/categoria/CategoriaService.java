@@ -32,4 +32,6 @@ public interface CategoriaService {
 	
 	public List<Categoria> listAllCategorieDatoOrdine(Ordine input) throws Exception;
 
+	public List<String> listAllCodiciOfOrdineInFebbraio();
+
 }

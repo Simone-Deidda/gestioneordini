@@ -162,7 +162,8 @@ public class CategoriaServiceImpl implements CategoriaService {
 			articoloInstance = entityManager.merge(articoloInstance);
 
 			articoloInstance.getCategorie().remove(categoriaInstance);
-
+			entityManager.remove(articoloInstance);
+			
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {
 			entityManager.getTransaction().rollback();
@@ -181,6 +182,22 @@ public class CategoriaServiceImpl implements CategoriaService {
 			categoriaDAO.setEntityManager(entityManager);
 
 			return categoriaDAO.listAllCategorieOfOrdine(input);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+	
+	@Override
+	public List<String> listAllCodiciOfOrdineInFebbraio(){
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			categoriaDAO.setEntityManager(entityManager);
+
+			return categoriaDAO.listAllCodesOfOrdineInFebbraio();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

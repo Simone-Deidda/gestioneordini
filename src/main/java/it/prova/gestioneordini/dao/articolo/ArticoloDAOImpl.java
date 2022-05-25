@@ -28,7 +28,7 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 		TypedQuery<Articolo> query = entityManager
 				.createQuery("FROM Articolo a left join fetch a.categorie c where a.id = :idArticolo", Articolo.class);
 
-		return query.getSingleResult();
+		return query.setParameter("idArticolo", id).getSingleResult();
 	}
 
 	@Override
@@ -49,6 +49,10 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 
 	@Override
 	public void delete(Articolo o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		entityManager.remove(entityManager.merge(o));
 	}
 
 	@Override

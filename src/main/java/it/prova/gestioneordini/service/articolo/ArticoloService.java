@@ -26,5 +26,7 @@ public interface ArticoloService {
 	// operazioni di Articolo
 	public void aggiungiCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception;
 	
+	public void rimuoviCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception;
+	
 	public Integer sommaPrezziArticoliAppartenentiA(Categoria input);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import it.prova.gestioneordini.exceptions.CannotDeleteCategoriaContainingArticoliException;
 import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Articolo;
@@ -126,6 +127,50 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public void rimuovi(Long idCategoria) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+			categoriaDAO.setEntityManager(entityManager);
+			
+			Categoria categoria = categoriaDAO.findByIdFetching(idCategoria);
+			if (categoria == null || !categoria.getArticoli().isEmpty()) {
+				throw new CannotDeleteCategoriaContainingArticoliException("Non puoi eliminare una Categoria avente Articoli associati.");
+			}
+			
+			categoriaDAO.delete(categoria);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+	
+	@Override
+	public void rimuoviArticolo(Categoria categoriaInstance, Articolo articoloInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+			categoriaDAO.setEntityManager(entityManager);
+
+			categoriaInstance = entityManager.merge(categoriaInstance);
+			articoloInstance = entityManager.merge(articoloInstance);
+
+			articoloInstance.getCategorie().remove(categoriaInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override
@@ -137,5 +182,5 @@ public class CategoriaServiceImpl implements CategoriaService {
 	public void setCategoriaDAO(CategoriaDAO categoriaDao) {
 		this.categoriaDAO = categoriaDao;
 	}
-
+	
 }

@@ -38,6 +38,10 @@ public class OrdineDAOImpl implements OrdineDAO {
 
 	@Override
 	public void delete(Ordine o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		entityManager.remove(entityManager.merge(o));
 	}
 
 	@Override

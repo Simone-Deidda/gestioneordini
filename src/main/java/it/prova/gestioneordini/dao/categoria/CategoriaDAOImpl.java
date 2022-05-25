@@ -47,6 +47,10 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
 	@Override
 	public void delete(Categoria o) throws Exception {
+		if (o == null) {
+			throw new Exception("Problema valore in input");
+		}
+		entityManager.remove(entityManager.merge(o));
 	}
 
 	@Override

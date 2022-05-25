@@ -27,7 +27,7 @@ public class TestGestioneOrdini {
 			System.out.println("Nella tabella Ordine ci sono " + ordineServiceInstance.listAll().size() + " elementi.");
 			System.out.println(
 					"Nella tabella Categoria ci sono " + categoriaServiceInstance.listAll().size() + " elementi.");
-/*
+
 			testInserimentoOrdine(ordineServiceInstance);
 
 			testInserimentoCategoria(categoriaServiceInstance);
@@ -59,9 +59,14 @@ public class TestGestioneOrdini {
 
 			testGetOrdinePiuRecenteInTerminiDiSpedizioni(ordineServiceInstance, categoriaServiceInstance,
 					articoloServiceInstance);
-			testGetAllListaCodiciOrdiniDiFebbraio(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
- */
+
+			testGetAllListaCodiciOrdiniDiFebbraio(ordineServiceInstance, categoriaServiceInstance,
+					articoloServiceInstance);
+
 			testSommaPrezziDatoDestinatario(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
+
+			testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo(ordineServiceInstance,
+					categoriaServiceInstance, articoloServiceInstance);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -528,7 +533,7 @@ public class TestGestioneOrdini {
 			throw new RuntimeException(
 					"testSommaPrezziDatoDestinatario fallito: l'Articolo non è stato inserito correttamente.");
 		}
-		
+
 		Articolo nuovoArticolo2 = new Articolo("Pesca", "0001022233", 8,
 				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
 		nuovoArticolo2.setOrdine(nuovoOrdine);
@@ -547,6 +552,50 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println("\n<<<<<<<<<< Fine testGetAllListaCodiciOrdiniDiFebbraio: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo(
+			OrdineService ordineServiceInstance, CategoriaService categoriaServiceInstance,
+			ArticoloService articoloServiceInstance) throws Exception {
+		System.out.println(
+				"\n<<<<<<<<<< Inizio testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo >>>>>>>>>>");
+		String stringa = "123";
+
+		Ordine nuovoOrdine = new Ordine("Mario Rossi", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("10/02/2022"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
+		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
+		if (nuovoCategoria.getId() == null) {
+			throw new RuntimeException(
+					"testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo fallito: la Categoria non è stato inserito correttamente.");
+		}
+
+		Articolo nuovoArticolo = new Articolo("Mela", "000112" + stringa + "3", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+		if (nuovoArticolo.getId() == null) {
+			throw new RuntimeException(
+					"testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo fallito: l'Articolo non è stato inserito correttamente.");
+		}
+
+		List<String> listaIndirizzi = ordineServiceInstance.listAllIndirizziOfNumeroSerialeArticoloContains(stringa);
+		if (listaIndirizzi == null || listaIndirizzi.isEmpty()
+				|| listaIndirizzi.contains(nuovoArticolo.getNumeroSeriale())) {
+			throw new RuntimeException(
+					"testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo fallito: la lista indirizzi non contiene almeno un dato valido appena inserito.");
+		}
+
+		System.out.println(
+				"\n<<<<<<<<<< Fine testGetListaIndirizziContenentiUnaStringNelNumeroSerialeDellArticolo: PASSATO >>>>>>>>>>");
 	}
 
 }

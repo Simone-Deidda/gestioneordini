@@ -66,11 +66,19 @@ public class OrdineDAOImpl implements OrdineDAO {
 		TypedQuery<Ordine> query = entityManager.createQuery("select o from Ordine o join o.articoli a join a.categorie c where c.id = ?1 order by o.dataSpedizione desc", Ordine.class);
 		return query.setParameter(1, input.getId()).getResultList().get(0);
 	}
+	
+	@Override
+	public List<String> listAllIndirizziOfNumeroSerialeArticolo(String stringa) {
+		TypedQuery<String> query = entityManager.createQuery("select distinct o.indirizzoSpedizione from Ordine o join o.articoli a where a.numeroSeriale LIKE ?1", String.class);
+		return query.setParameter(1, "%" + stringa + "%").getResultList();
+	}
 
 	@Override
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
+
+	
 
 	
 

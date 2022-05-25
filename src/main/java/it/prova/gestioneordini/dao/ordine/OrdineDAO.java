@@ -12,6 +12,8 @@ public interface OrdineDAO extends IBaseDAO<Ordine> {
 	public Ordine getOrdineConSpedizionePiuRecenteOfCategoria(Categoria input);
 
 	public Ordine findByIdFetching(Long idOrdine);
+
+	public List<String> listAllIndirizziOfNumeroSerialeArticolo(String stringa);
 	
 	
 }

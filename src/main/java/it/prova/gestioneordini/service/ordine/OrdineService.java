@@ -30,4 +30,6 @@ public interface OrdineService {
 	public Ordine getOrdinePiuRecenteData(Categoria input);
 
 	public Ordine caricaSingoloElementoEager(Long id);
+
+	public List<String> listAllIndirizziOfNumeroSerialeArticoloContains(String stringa);
 }

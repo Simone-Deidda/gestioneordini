@@ -2,6 +2,7 @@ package it.prova.gestioneordini.test;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import it.prova.gestioneordini.exceptions.CannotDeleteArticoloContainingCategorieException;
 import it.prova.gestioneordini.exceptions.CannotDeleteCategoriaContainingArticoliException;
@@ -27,36 +28,32 @@ public class TestGestioneOrdini {
 			System.out.println(
 					"Nella tabella Categoria ci sono " + categoriaServiceInstance.listAll().size() + " elementi.");
 
-			// testInserimentoOrdine(ordineServiceInstance);
+			testInserimentoOrdine(ordineServiceInstance);
 
-			// testInserimentoCategoria(categoriaServiceInstance);
+			testInserimentoCategoria(categoriaServiceInstance);
 
-			// testInserimentoArticoloEAggiungiOrdine(articoloServiceInstance,
-			// ordineServiceInstance);
+			testInserimentoArticoloEAggiungiOrdine(articoloServiceInstance, ordineServiceInstance);
 
-			// testAggiornaOrdine(ordineServiceInstance);
+			testAggiornaOrdine(ordineServiceInstance);
 
-			// testAggiornaCategoria(categoriaServiceInstance);
+			testAggiornaCategoria(categoriaServiceInstance);
 
-			// testAggiornaArticolo(articoloServiceInstance, ordineServiceInstance);
+			testAggiornaArticolo(articoloServiceInstance, ordineServiceInstance);
 
-			// testAggiungiArticoloAOrdine(ordineServiceInstance);
+			testRimuoviArticoloAOrdine(ordineServiceInstance, articoloServiceInstance);
 
-			//testRimuoviArticoloAOrdine(ordineServiceInstance, articoloServiceInstance);
+			testAggiungiArticoloACategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
-			// testAggiungiArticoloACategoria(ordineServiceInstance,
-			// articoloServiceInstance, categoriaServiceInstance);
+			testRimuoviArticoloACategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
-			// testRimuoviArticoloACategoria(ordineServiceInstance, articoloServiceInstance,
-			// categoriaServiceInstance);
+			testAggiungiCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
-			// testAggiungiCategoriaAdArticolo(ordineServiceInstance,
-			// articoloServiceInstance, categoriaServiceInstance);
+			testRimuoviCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
-			// testRimuoviCategoriaAdArticolo(ordineServiceInstance,
-			// articoloServiceInstance, categoriaServiceInstance);
-			
-			testGetSommaPrezziArticoliDataCategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+			testGetSommaPrezziArticoliDataCategoria(ordineServiceInstance, articoloServiceInstance,
+					categoriaServiceInstance);
+
+			testListAllCategorieDatoOrdine(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -319,8 +316,46 @@ public class TestGestioneOrdini {
 					"testGetSommaPrezziArticoliDataCategoria fallito: somma prezzi minore di uno dei suoi elementi.");
 		}
 
-
 		System.out.println("<<<<<<<<<< Fine testGetSommaPrezziArticoliDataCategoria: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testListAllCategorieDatoOrdine(OrdineService ordineServiceInstance,
+			CategoriaService categoriaServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testListAllCategorieDatoOrdine >>>>>>>>>>");
+
+		Ordine nuovoOrdine = new Ordine("Gianfranco Mura", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2021"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testListAllCategorieDatoOrdine fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
+		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
+		if (nuovoCategoria.getId() == null) {
+			throw new RuntimeException(
+					"testListAllCategorieDatoOrdine fallito: la Categoria non è stato inserito correttamente.");
+		}
+
+		Articolo nuovoArticolo = new Articolo("Mela", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+		if (nuovoArticolo.getId() == null) {
+			throw new RuntimeException(
+					"testListAllCategorieDatoOrdine fallito: l'Articolo non è stato inserito correttamente.");
+		}
+
+		List<Categoria> listaCategorie = categoriaServiceInstance.listAllCategorieDatoOrdine(nuovoOrdine);
+		if (listaCategorie == null || listaCategorie.isEmpty() || !listaCategorie.contains(nuovoCategoria)) {
+			throw new RuntimeException(
+					"testListAllCategorieDatoOrdine fallito: lista Categorie non è stato inizializzata correttamente.");
+		}
+
+		System.out.println("\n<<<<<<<<<< Fine testInserimentoOrdine: PASSATO >>>>>>>>>>");
 	}
 
 }

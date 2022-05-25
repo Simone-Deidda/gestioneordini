@@ -55,7 +55,8 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
 	@Override
 	public List<Categoria> listAllCategorieOfOrdine(Ordine input) {
-		return null;
+		TypedQuery<Categoria> query = entityManager.createQuery("select c from Categoria c join c.articoli a join a.ordine o where o.id = :idOrdine", Categoria.class);
+		return query.setParameter("idOrdine", input.getId()).getResultList();
 	}
 
 	@Override

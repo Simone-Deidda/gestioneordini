@@ -48,6 +48,22 @@ public class ArticoloServiceImpl implements ArticoloService {
 			EntityManagerUtil.closeEntityManager(entityManager);
 		}
 	}
+	
+	@Override
+	public Articolo caricaSingoloElementoEager(Long id) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			articoloDao.setEntityManager(entityManager);
+			return articoloDao.findByIdFetching(id);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
 
 	@Override
 	public void aggiorna(Articolo articoloInstance) throws Exception {
@@ -78,6 +94,29 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 			articoloDao.setEntityManager(entityManager);
 			articoloDao.insert(articoloInstance);
+
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public void aggiungiCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			entityManager.getTransaction().begin();
+			articoloDao.setEntityManager(entityManager);
+
+			categoriaInstance = entityManager.merge(categoriaInstance);
+			articoloInstance = entityManager.merge(articoloInstance);
+
+			articoloInstance.getCategorie().add(categoriaInstance);
 
 			entityManager.getTransaction().commit();
 		} catch (Exception e) {

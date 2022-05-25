@@ -1,8 +1,10 @@
 package it.prova.gestioneordini.dao.articolo;
 
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
@@ -18,6 +20,15 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 	@Override
 	public Articolo get(Long id) throws Exception {
 		return entityManager.find(Articolo.class, id);
+	}
+
+	@Override
+	public Articolo findByIdFetching(Long id) {
+
+		TypedQuery<Articolo> query = entityManager
+				.createQuery("FROM Articolo a left join fetch a.categorie c where a.id = :idArticolo", Articolo.class);
+
+		return query.getSingleResult();
 	}
 
 	@Override

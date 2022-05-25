@@ -8,4 +8,6 @@ import it.prova.gestioneordini.model.Ordine;
 
 public interface CategoriaDAO extends IBaseDAO<Categoria> {
 	public List<Categoria> listAllCategorieOfOrdine(Ordine input);
+
+	public Categoria findByIdFetching(Long id);
 }

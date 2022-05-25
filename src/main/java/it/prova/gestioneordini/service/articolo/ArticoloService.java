@@ -14,6 +14,8 @@ public interface ArticoloService {
 	public List<Articolo> listAll() throws Exception;
 
 	public Articolo caricaSingoloElemento(Long id) throws Exception;
+	
+	public Articolo caricaSingoloElementoEager(Long id) throws Exception;
 
 	public void aggiorna(Articolo articoloInstance) throws Exception;
 
@@ -22,5 +24,7 @@ public interface ArticoloService {
 	public void rimuovi(Long idArticolo) throws Exception;
 	
 	// operazioni di Articolo
+	public void aggiungiCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception;
+	
 	public Integer sommaPrezziArticoliAppartenentiA(Categoria input);
 }

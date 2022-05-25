@@ -157,8 +157,19 @@ public class OrdineServiceImpl implements OrdineService {
 	}
 
 	@Override
-	public List<Ordine> listAllOrdiniAppartenentiA(Categoria input) {
-		return null;
+	public List<Ordine> listAllOrdiniAppartenentiA(Categoria input) throws Exception {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			ordineDao.setEntityManager(entityManager);
+
+			return ordineDao.listAllOrdiniOfCategoria(input);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 	@Override

@@ -355,7 +355,7 @@ public class TestGestioneOrdini {
 					"testListAllCategorieDatoOrdine fallito: lista Categorie non è stato inizializzata correttamente.");
 		}
 
-		System.out.println("\n<<<<<<<<<< Fine testInserimentoOrdine: PASSATO >>>>>>>>>>");
+		System.out.println("\n<<<<<<<<<< Fine testListAllCategorieDatoOrdine: PASSATO >>>>>>>>>>");
 	}
 
 }

@@ -25,7 +25,7 @@ public interface OrdineService {
 	// operazioni di Ordine
 	public void rimuoviArticolo(Ordine ordineInstance, Articolo articoloInstance) throws Exception;
 	
-	public List<Ordine> listAllOrdiniAppartenentiA(Categoria input);
+	public List<Ordine> listAllOrdiniAppartenentiA(Categoria input) throws Exception;
 
 	public Ordine getOrdinePiuRecenteData(Categoria input);
 

@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ordine")
 public class Ordine {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -28,10 +28,10 @@ public class Ordine {
 	private String indirizzoSpedizione;
 	@Column(name = "dataSpedizione")
 	private Date dataSpedizione;
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "ordine")
 	private Set<Articolo> articoli = new HashSet<Articolo>();
-	
+
 	public Ordine() {
 	}
 
@@ -95,8 +95,7 @@ public class Ordine {
 		if (getClass() != obj.getClass())
 			return false;
 		Ordine other = (Ordine) obj;
-		return Objects.equals(articoli, other.articoli) && Objects.equals(dataSpedizione, other.dataSpedizione)
-				&& Objects.equals(id, other.id) && Objects.equals(indirizzoSpedizione, other.indirizzoSpedizione)
+		return Objects.equals(id, other.id) && Objects.equals(indirizzoSpedizione, other.indirizzoSpedizione)
 				&& Objects.equals(nomeDestinatario, other.nomeDestinatario);
 	}
 
@@ -105,6 +104,5 @@ public class Ordine {
 		return "Ordine [id=" + id + ", nomeDestinatario=" + nomeDestinatario + ", indirizzoSpedizione="
 				+ indirizzoSpedizione + ", dataSpedizione=" + dataSpedizione + ", articoli=" + articoli + "]";
 	}
-	
-	
+
 }

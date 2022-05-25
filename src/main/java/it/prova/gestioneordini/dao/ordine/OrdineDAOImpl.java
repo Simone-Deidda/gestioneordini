@@ -62,8 +62,9 @@ public class OrdineDAOImpl implements OrdineDAO {
 	
 
 	@Override
-	public Ordine getOrdinePiuRecenteOfCategoria(Categoria input) {
-		return null;
+	public Ordine getOrdineConSpedizionePiuRecenteOfCategoria(Categoria input) {
+		TypedQuery<Ordine> query = entityManager.createQuery("select o from Ordine o join o.articoli a join a.categorie c where c.id = ?1 order by o.dataSpedizione desc", Ordine.class);
+		return query.setParameter(1, input.getId()).getResultList().get(0);
 	}
 
 	@Override

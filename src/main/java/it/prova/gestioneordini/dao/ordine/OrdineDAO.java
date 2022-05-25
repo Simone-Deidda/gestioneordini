@@ -9,7 +9,9 @@ import it.prova.gestioneordini.model.Ordine;
 public interface OrdineDAO extends IBaseDAO<Ordine> {
 	public List<Ordine> listAllOrdiniOfCategoria(Categoria input);
 	
-	public Ordine getOrdinePiuRecenteOfCategoria(Categoria input);
+	public Ordine getOrdineConSpedizionePiuRecenteOfCategoria(Categoria input);
 
 	public Ordine findByIdFetching(Long idOrdine);
+	
+	
 }

@@ -55,6 +55,11 @@ public class TestGestioneOrdini {
 
 			testListAllCategorieDatoOrdine(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
 
+			testGetAllOrdiniDataCategoria(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
+
+			testGetOrdinePiuRecenteInTerminiDiSpedizioni(ordineServiceInstance, categoriaServiceInstance,
+					articoloServiceInstance);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -186,9 +191,9 @@ public class TestGestioneOrdini {
 
 		ordineServiceInstance.rimuoviArticolo(primoOrdine, nuovoArticolo);
 		Ordine primoOrdineEager = ordineServiceInstance.caricaSingoloElementoEager(primoOrdine.getId());
-		if (!primoOrdineEager.getArticoli().remove(nuovoArticolo)) {
+		if (!primoOrdineEager.getArticoli().contains(nuovoArticolo)) {
 			throw new RuntimeException(
-					"testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
+					"testRimuoviArticoloAOrdine fallito: la rimozione dell'Articolo non è avvenuta con successo.");
 		}
 
 		System.out.println("<<<<<<<<<< Fine testRimuoviArticoloAOrdine: PASSATO >>>>>>>>>>");
@@ -356,6 +361,101 @@ public class TestGestioneOrdini {
 		}
 
 		System.out.println("\n<<<<<<<<<< Fine testListAllCategorieDatoOrdine: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testGetAllOrdiniDataCategoria(OrdineService ordineServiceInstance,
+			CategoriaService categoriaServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testGetAllOrdiniDataCategoria >>>>>>>>>>");
+
+		Ordine nuovoOrdine = new Ordine("Gianfranco Mura", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2021"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testGetAllOrdiniDataCategoria fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
+		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
+		if (nuovoCategoria.getId() == null) {
+			throw new RuntimeException(
+					"testGetAllOrdiniDataCategoria fallito: la Categoria non è stato inserito correttamente.");
+		}
+
+		Articolo nuovoArticolo = new Articolo("Mela", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+		if (nuovoArticolo.getId() == null) {
+			throw new RuntimeException(
+					"testGetAllOrdiniDataCategoria fallito: l'Articolo non è stato inserito correttamente.");
+		}
+
+		List<Ordine> listaOrdini = ordineServiceInstance.listAllOrdiniAppartenentiA(nuovoCategoria);
+		System.out.println(listaOrdini == null);
+		if (listaOrdini == null || listaOrdini.isEmpty() || !listaOrdini.contains(nuovoOrdine)) {
+			throw new RuntimeException(
+					"testGetAllOrdiniDataCategoria fallito: lista Categorie non è stato inizializzata correttamente.");
+		}
+
+		System.out.println("\n<<<<<<<<<< Fine testGetAllOrdiniDataCategoria: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testGetOrdinePiuRecenteInTerminiDiSpedizioni(OrdineService ordineServiceInstance,
+			CategoriaService categoriaServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testGetOrdinePiuRecenteInTerminiDiSpedizioni >>>>>>>>>>");
+
+		Ordine nuovoOrdine = new Ordine("Gianfranco Mura", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("24/09/2021"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testGetOrdinePiuRecenteInTerminiDiSpedizioni fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Ordine nuovoOrdine2 = new Ordine("Luca Mura", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("25/05/2022"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine2);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testGetOrdinePiuRecenteInTerminiDiSpedizioni fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
+		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
+		if (nuovoCategoria.getId() == null) {
+			throw new RuntimeException(
+					"testGetOrdinePiuRecenteInTerminiDiSpedizioni fallito: la Categoria non è stato inserito correttamente.");
+		}
+
+		Articolo nuovoArticolo = new Articolo("Sale", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2020"));
+		nuovoArticolo.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+
+		Articolo nuovoArticolo2 = new Articolo("Mela", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo2.setOrdine(nuovoOrdine2);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo2);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo2);
+		if (nuovoArticolo2.getId() == null) {
+			throw new RuntimeException(
+					"testGetOrdinePiuRecenteInTerminiDiSpedizioni fallito: l'Articolo non è stato inserito correttamente.");
+		}
+
+		Ordine ordine = ordineServiceInstance.getOrdinePiuRecenteData(nuovoCategoria);
+		if (ordine == null || !ordine.equals(nuovoOrdine2)) {
+			System.out.println(ordine.getDataSpedizione());
+			throw new RuntimeException(
+					"testGetOrdinePiuRecenteInTerminiDiSpedizioni fallito: l'Ordine non è stato caricato correttamente.");
+		}
+
+		System.out.println("\n<<<<<<<<<< Fine testGetOrdinePiuRecenteInTerminiDiSpedizioni: PASSATO >>>>>>>>>>");
 	}
 
 }

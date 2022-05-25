@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
+
 public interface IBaseDAO<T> {
 
 	public List<T> list() throws Exception;
@@ -18,5 +21,6 @@ public interface IBaseDAO<T> {
 
 	// questo mi serve per l'injection
 	public void setEntityManager(EntityManager entityManager);
+
 
 }

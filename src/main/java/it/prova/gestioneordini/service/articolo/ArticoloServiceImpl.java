@@ -9,6 +9,7 @@ import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public class ArticoloServiceImpl implements ArticoloService {
 	private ArticoloDAO articoloDao;
@@ -178,13 +179,29 @@ public class ArticoloServiceImpl implements ArticoloService {
 	}
 
 	@Override
-	public Long sommaPrezziArticoliAppartenentiA(Categoria input) {
+	public Long sommaPrezziArticoliAppartenentiACategoria(Categoria input) {
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
 			articoloDao.setEntityManager(entityManager);
 
 			return articoloDao.sumPrezziOfArticoliFromCategoria(input);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public Long sommaPrezziArticoliAppartenentiADestinatario(Ordine nuovoOrdine) {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			articoloDao.setEntityManager(entityManager);
+
+			return articoloDao.sumPrezziOfArticoliFromDestinatario(nuovoOrdine);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

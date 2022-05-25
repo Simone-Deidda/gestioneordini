@@ -59,8 +59,9 @@ public class TestGestioneOrdini {
 
 			testGetOrdinePiuRecenteInTerminiDiSpedizioni(ordineServiceInstance, categoriaServiceInstance,
 					articoloServiceInstance);
-*/
 			testGetAllListaCodiciOrdiniDiFebbraio(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
+ */
+			testSommaPrezziDatoDestinatario(ordineServiceInstance, categoriaServiceInstance, articoloServiceInstance);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -315,7 +316,7 @@ public class TestGestioneOrdini {
 
 		Categoria primaCategoriaDiArticolo = new ArrayList<Categoria>(primoArticoloEager.getCategorie()).get(0);
 
-		Long somma = articoloServiceInstance.sommaPrezziArticoliAppartenentiA(primaCategoriaDiArticolo);
+		Long somma = articoloServiceInstance.sommaPrezziArticoliAppartenentiACategoria(primaCategoriaDiArticolo);
 
 		if (somma < primoArticoloEager.getPrezzoSingolo()) {
 			throw new RuntimeException(
@@ -493,6 +494,56 @@ public class TestGestioneOrdini {
 		if (listaCodici == null || listaCodici.isEmpty() || !listaCodici.contains(nuovoCategoria.getCodice())) {
 			throw new RuntimeException(
 					"testGetAllListaCodiciOrdiniDiFebbraio fallito: la lista dei codici non contiene un dato valido appena inserito.");
+		}
+
+		System.out.println("\n<<<<<<<<<< Fine testGetAllListaCodiciOrdiniDiFebbraio: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testSommaPrezziDatoDestinatario(OrdineService ordineServiceInstance,
+			CategoriaService categoriaServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testSommaPrezziDatoDestinatario >>>>>>>>>>");
+
+		Ordine nuovoOrdine = new Ordine("Mario Rossi", "via Curiel",
+				new SimpleDateFormat("dd/MM/yyyy").parse("10/02/2022"));
+		ordineServiceInstance.inserisciNuovo(nuovoOrdine);
+		if (nuovoOrdine.getId() == null) {
+			throw new RuntimeException(
+					"testSommaPrezziDatoDestinatario fallito: l'Ordine non è stato inserito correttamente.");
+		}
+
+		Categoria nuovoCategoria = new Categoria("Frutta", "CODICE_001");
+		categoriaServiceInstance.inserisciNuovo(nuovoCategoria);
+		if (nuovoCategoria.getId() == null) {
+			throw new RuntimeException(
+					"testSommaPrezziDatoDestinatario fallito: la Categoria non è stato inserito correttamente.");
+		}
+
+		Articolo nuovoArticolo = new Articolo("Mela", "0001122233", 1,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
+		if (nuovoArticolo.getId() == null) {
+			throw new RuntimeException(
+					"testSommaPrezziDatoDestinatario fallito: l'Articolo non è stato inserito correttamente.");
+		}
+		
+		Articolo nuovoArticolo2 = new Articolo("Pesca", "0001022233", 8,
+				new SimpleDateFormat("dd/MM/yyyy").parse("22/05/2022"));
+		nuovoArticolo2.setOrdine(nuovoOrdine);
+		articoloServiceInstance.aggiungiCategoria(nuovoCategoria, nuovoArticolo2);
+
+		articoloServiceInstance.inserisciNuovo(nuovoArticolo2);
+		if (nuovoArticolo2.getId() == null) {
+			throw new RuntimeException(
+					"testSommaPrezziDatoDestinatario fallito: l'Articolo non è stato inserito correttamente.");
+		}
+
+		Long somma = articoloServiceInstance.sommaPrezziArticoliAppartenentiADestinatario(nuovoOrdine);
+		if (somma < nuovoArticolo.getPrezzoSingolo() + nuovoArticolo2.getPrezzoSingolo()) {
+			throw new RuntimeException(
+					"testSommaPrezziDatoDestinatario fallito: la Categoria non è stato inserito correttamente.");
 		}
 
 		System.out.println("\n<<<<<<<<<< Fine testGetAllListaCodiciOrdiniDiFebbraio: PASSATO >>>>>>>>>>");

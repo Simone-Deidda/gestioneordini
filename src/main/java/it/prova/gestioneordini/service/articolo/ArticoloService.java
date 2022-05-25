@@ -5,6 +5,7 @@ import java.util.List;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public interface ArticoloService {
 	// setter
@@ -28,5 +29,7 @@ public interface ArticoloService {
 	
 	public void rimuoviCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception;
 	
-	public Long sommaPrezziArticoliAppartenentiA(Categoria input);
+	public Long sommaPrezziArticoliAppartenentiACategoria(Categoria input);
+
+	public Long sommaPrezziArticoliAppartenentiADestinatario(Ordine nuovoOrdine);
 }

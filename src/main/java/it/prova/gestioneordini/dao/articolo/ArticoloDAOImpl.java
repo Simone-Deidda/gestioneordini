@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public class ArticoloDAOImpl implements ArticoloDAO {
 	private EntityManager entityManager;
@@ -62,8 +63,16 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 	}
 
 	@Override
+	public Long sumPrezziOfArticoliFromDestinatario(Ordine nuovoOrdine) {
+		TypedQuery<Long> query = entityManager.createQuery("SELECT sum(a.prezzoSingolo) FROM Articolo a join a.ordine o WHERE o.nomeDestinatario = :nomeDestinatario", Long.class);
+		return query.setParameter("nomeDestinatario", nuovoOrdine.getNomeDestinatario()).getSingleResult();
+	}
+	
+	@Override
 	public void setEntityManager(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
+
+	
 
 }

@@ -56,8 +56,9 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 	}
 
 	@Override
-	public Integer sumPrezziOfArticoliFromCategoria(Categoria input) {
-		return null;
+	public Long sumPrezziOfArticoliFromCategoria(Categoria input) {
+		TypedQuery<Long> query = entityManager.createQuery("SELECT count(a.prezzoSingolo) FROM Articolo a join a.categorie c WHERE c.id = :idCategoria", Long.class);
+		return query.setParameter("idCategoria", input.getId()).getSingleResult();
 	}
 
 	@Override

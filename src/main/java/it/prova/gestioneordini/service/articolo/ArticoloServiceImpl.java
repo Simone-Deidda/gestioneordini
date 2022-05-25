@@ -178,8 +178,19 @@ public class ArticoloServiceImpl implements ArticoloService {
 	}
 
 	@Override
-	public Integer sommaPrezziArticoliAppartenentiA(Categoria input) {
-		return null;
+	public Long sommaPrezziArticoliAppartenentiA(Categoria input) {
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			articoloDao.setEntityManager(entityManager);
+
+			return articoloDao.sumPrezziOfArticoliFromCategoria(input);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
 	}
 
 }

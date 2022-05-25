@@ -1,6 +1,7 @@
 package it.prova.gestioneordini.test;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import it.prova.gestioneordini.exceptions.CannotDeleteArticoloContainingCategorieException;
 import it.prova.gestioneordini.exceptions.CannotDeleteCategoriaContainingArticoliException;
@@ -26,29 +27,36 @@ public class TestGestioneOrdini {
 			System.out.println(
 					"Nella tabella Categoria ci sono " + categoriaServiceInstance.listAll().size() + " elementi.");
 
-			//testInserimentoOrdine(ordineServiceInstance);
+			// testInserimentoOrdine(ordineServiceInstance);
 
-			//testInserimentoCategoria(categoriaServiceInstance);
+			// testInserimentoCategoria(categoriaServiceInstance);
 
-			//testInserimentoArticoloEAggiungiOrdine(articoloServiceInstance, ordineServiceInstance);
+			// testInserimentoArticoloEAggiungiOrdine(articoloServiceInstance,
+			// ordineServiceInstance);
 
-			//testAggiornaOrdine(ordineServiceInstance);
+			// testAggiornaOrdine(ordineServiceInstance);
 
-			//testAggiornaCategoria(categoriaServiceInstance);
+			// testAggiornaCategoria(categoriaServiceInstance);
 
-			//testAggiornaArticolo(articoloServiceInstance, ordineServiceInstance);
+			// testAggiornaArticolo(articoloServiceInstance, ordineServiceInstance);
 
 			// testAggiungiArticoloAOrdine(ordineServiceInstance);
 
-			testRimuoviArticoloAOrdine(ordineServiceInstance, articoloServiceInstance);
+			//testRimuoviArticoloAOrdine(ordineServiceInstance, articoloServiceInstance);
 
-			//testAggiungiArticoloACategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+			// testAggiungiArticoloACategoria(ordineServiceInstance,
+			// articoloServiceInstance, categoriaServiceInstance);
 
-			//testRimuoviArticoloACategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+			// testRimuoviArticoloACategoria(ordineServiceInstance, articoloServiceInstance,
+			// categoriaServiceInstance);
 
-			//testAggiungiCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+			// testAggiungiCategoriaAdArticolo(ordineServiceInstance,
+			// articoloServiceInstance, categoriaServiceInstance);
 
-			//testRimuoviCategoriaAdArticolo(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+			// testRimuoviCategoriaAdArticolo(ordineServiceInstance,
+			// articoloServiceInstance, categoriaServiceInstance);
+			
+			testGetSommaPrezziArticoliDataCategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,119 +177,150 @@ public class TestGestioneOrdini {
 		System.out.println("<<<<<<<<<< Fine testAggiornaArticolo: PASSATO >>>>>>>>>>");
 	}
 
-
-	private static void testRimuoviArticoloAOrdine(OrdineService ordineServiceInstance, ArticoloService articoloServiceInstance) throws Exception {
+	private static void testRimuoviArticoloAOrdine(OrdineService ordineServiceInstance,
+			ArticoloService articoloServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviArticoloAOrdine >>>>>>>>>>");
 		Ordine primoOrdine = ordineServiceInstance.listAll().get(0);
-		
+
 		Articolo nuovoArticolo = new Articolo("Pera", "9991122233", 1,
 				new SimpleDateFormat("dd/MM/yyyy").parse("25/05/2022"));
 		nuovoArticolo.setOrdine(primoOrdine);
 		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
-		
+
 		ordineServiceInstance.rimuoviArticolo(primoOrdine, nuovoArticolo);
 		Ordine primoOrdineEager = ordineServiceInstance.caricaSingoloElementoEager(primoOrdine.getId());
 		if (!primoOrdineEager.getArticoli().remove(nuovoArticolo)) {
-			throw new RuntimeException("testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
+			throw new RuntimeException(
+					"testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
 		}
-		
-		
+
 		System.out.println("<<<<<<<<<< Fine testRimuoviArticoloAOrdine: PASSATO >>>>>>>>>>");
 	}
 
 	private static void testAggiungiArticoloACategoria(OrdineService ordineServiceInstance,
 			ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testAggiungiArticoloACategoria >>>>>>>>>>");
-		
-		Articolo nuovoArticolo = new Articolo("Gelato", "7775588833", 10, new SimpleDateFormat("dd/MM/yyyy").parse("18/05/2022"));
+
+		Articolo nuovoArticolo = new Articolo("Gelato", "7775588833", 10,
+				new SimpleDateFormat("dd/MM/yyyy").parse("18/05/2022"));
 		nuovoArticolo.setOrdine(ordineServiceInstance.listAll().get(0));
 		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
-		
+
 		Categoria primaCategoria = categoriaServiceInstance.listAll().get(0);
 		categoriaServiceInstance.aggiungiArticolo(primaCategoria, nuovoArticolo);
-		
+
 		Categoria eager = categoriaServiceInstance.caricaSingoloElementoEager(primaCategoria.getId());
 		if (eager == null || !eager.getId().equals(primaCategoria.getId())) {
-			throw new RuntimeException("testAggiungiArticoloACategoria fallito: la Categoria ricercato per ID (con eager Articoli) non combacia.");
+			throw new RuntimeException(
+					"testAggiungiArticoloACategoria fallito: la Categoria ricercato per ID (con eager Articoli) non combacia.");
 		}
-		
+
 		if (eager.getArticoli() == null || eager.getArticoli().add(nuovoArticolo)) {
-			throw new RuntimeException("testAggiungiArticoloACategoria fallito: l'Articolo non è stato inserto correttamente.");
+			throw new RuntimeException(
+					"testAggiungiArticoloACategoria fallito: l'Articolo non è stato inserto correttamente.");
 		}
 
 		System.out.println("<<<<<<<<<< Fine testAggiungiArticoloACategoria: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testRimuoviArticoloACategoria(OrdineService ordineServiceInstance, ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
+	private static void testRimuoviArticoloACategoria(OrdineService ordineServiceInstance,
+			ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviArticoloACategoria >>>>>>>>>>");
 		Articolo nuovoArticolo = new Articolo("Banana", "0001122238", 3,
 				new SimpleDateFormat("dd/MM/yyyy").parse("20/05/2022"));
 		nuovoArticolo.setOrdine(ordineServiceInstance.listAll().get(0));
 		articoloServiceInstance.inserisciNuovo(nuovoArticolo);
-		
+
 		Categoria frutta = categoriaServiceInstance.listAll().get(0);
 		categoriaServiceInstance.aggiungiArticolo(frutta, nuovoArticolo);
-		
+
 		try {
 			categoriaServiceInstance.rimuovi(frutta.getId());
-			
-			throw new RuntimeException("testRimuoviArticoloACategoria fallito: l'eliminazione della Categoria doveva essere impedita.");
+
+			throw new RuntimeException(
+					"testRimuoviArticoloACategoria fallito: l'eliminazione della Categoria doveva essere impedita.");
 		} catch (CannotDeleteCategoriaContainingArticoliException e) {
-			
+
 		}
-		
+
 		categoriaServiceInstance.rimuoviArticolo(frutta, nuovoArticolo);
 		Categoria fruttaEager = categoriaServiceInstance.caricaSingoloElementoEager(frutta.getId());
 		if (!fruttaEager.getArticoli().remove(nuovoArticolo)) {
-			throw new RuntimeException("testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
+			throw new RuntimeException(
+					"testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
 		}
 
 		System.out.println("<<<<<<<<<< Fine testRimuoviArticoloACategoria: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testAggiungiCategoriaAdArticolo(OrdineService ordineServiceInstance, ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
+	private static void testAggiungiCategoriaAdArticolo(OrdineService ordineServiceInstance,
+			ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testAggiungiCategoriaAdArticolo >>>>>>>>>>");
-		
+
 		Articolo primoArticolo = articoloServiceInstance.listAll().get(0);
 		Categoria nuovaCategoria = new Categoria("Dolci", "CODICE_013");
 		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
-		
+
 		articoloServiceInstance.aggiungiCategoria(nuovaCategoria, primoArticolo);
-		
+
 		Articolo eager = articoloServiceInstance.caricaSingoloElementoEager(primoArticolo.getId());
 		if (eager == null || !eager.getId().equals(primoArticolo.getId())) {
-			throw new RuntimeException("testAggiungiCategoriaAdArticolo fallito: l'Articolo ricercato per ID (con eager Categorie) non combacia.");
+			throw new RuntimeException(
+					"testAggiungiCategoriaAdArticolo fallito: l'Articolo ricercato per ID (con eager Categorie) non combacia.");
 		}
-		
+
 		if (eager.getCategorie() == null || eager.getCategorie().add(nuovaCategoria)) {
-			throw new RuntimeException("testAggiungiArticoloACategoria fallito: la Categoria non è stato inserto correttamente.");
+			throw new RuntimeException(
+					"testAggiungiArticoloACategoria fallito: la Categoria non è stato inserto correttamente.");
 		}
 		System.out.println("<<<<<<<<<< Fine testAggiungiCategoriaAdArticolo: PASSATO >>>>>>>>>>");
 	}
 
-	private static void testRimuoviCategoriaAdArticolo(OrdineService ordineServiceInstance, ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
+	private static void testRimuoviCategoriaAdArticolo(OrdineService ordineServiceInstance,
+			ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
 		System.out.println("\n<<<<<<<<<< Inizio testRimuoviCategoriaAdArticolo >>>>>>>>>>");
 		Articolo mela = articoloServiceInstance.listAll().get(0);
-		
+
 		Categoria nuovaCategoria = new Categoria("Frutta2", "CODICE_001_1");
 		categoriaServiceInstance.inserisciNuovo(nuovaCategoria);
 		articoloServiceInstance.aggiungiCategoria(nuovaCategoria, mela);
-		
+
 		try {
 			articoloServiceInstance.rimuovi(mela.getId());
-			
-			throw new RuntimeException("testRimuoviArticoloACategoria fallito: l'eliminazione dell'Articolo doveva essere impedita.");
+
+			throw new RuntimeException(
+					"testRimuoviArticoloACategoria fallito: l'eliminazione dell'Articolo doveva essere impedita.");
 		} catch (CannotDeleteArticoloContainingCategorieException e) {
-			
+
 		}
-		
+
 		articoloServiceInstance.rimuoviCategoria(nuovaCategoria, mela);
 		Articolo melaEager = articoloServiceInstance.caricaSingoloElementoEager(mela.getId());
 		if (!melaEager.getCategorie().remove(nuovaCategoria)) {
-			throw new RuntimeException("testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
+			throw new RuntimeException(
+					"testRimuoviArticoloACategoria fallito: la rimozione dell'Articolo non è avvenuta con successo.");
 		}
 
 		System.out.println("<<<<<<<<<< Fine testRimuoviCategoriaAdArticolo: PASSATO >>>>>>>>>>");
+	}
+
+	private static void testGetSommaPrezziArticoliDataCategoria(OrdineService ordineServiceInstance,
+			ArticoloService articoloServiceInstance, CategoriaService categoriaServiceInstance) throws Exception {
+		System.out.println("\n<<<<<<<<<< Inizio testGetSommaPrezziArticoliDataCategoria >>>>>>>>>>");
+		Articolo primoArticoloEager = articoloServiceInstance
+				.caricaSingoloElementoEager(articoloServiceInstance.listAll().get(0).getId());
+
+		Categoria primaCategoriaDiArticolo = new ArrayList<Categoria>(primoArticoloEager.getCategorie()).get(0);
+
+		Long somma = articoloServiceInstance.sommaPrezziArticoliAppartenentiA(primaCategoriaDiArticolo);
+
+		if (somma < primoArticoloEager.getPrezzoSingolo()) {
+			throw new RuntimeException(
+					"testGetSommaPrezziArticoliDataCategoria fallito: somma prezzi minore di uno dei suoi elementi.");
+		}
+
+
+		System.out.println("<<<<<<<<<< Fine testGetSommaPrezziArticoliDataCategoria: PASSATO >>>>>>>>>>");
 	}
 
 }

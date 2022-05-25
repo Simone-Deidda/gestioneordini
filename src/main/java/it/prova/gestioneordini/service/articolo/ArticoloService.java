@@ -28,5 +28,5 @@ public interface ArticoloService {
 	
 	public void rimuoviCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception;
 	
-	public Integer sommaPrezziArticoliAppartenentiA(Categoria input);
+	public Long sommaPrezziArticoliAppartenentiA(Categoria input);
 }

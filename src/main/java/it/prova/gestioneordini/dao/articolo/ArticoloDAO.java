@@ -5,7 +5,7 @@ import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
 
 public interface ArticoloDAO extends IBaseDAO<Articolo>{
-	public Integer sumPrezziOfArticoliFromCategoria(Categoria input);
+	public Long sumPrezziOfArticoliFromCategoria(Categoria input);
 
 	public Articolo findByIdFetching(Long id);
 }
